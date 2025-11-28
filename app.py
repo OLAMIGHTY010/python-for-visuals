@@ -8,17 +8,17 @@ import json
 from schema import load_data
 from styles import colors, HEADER_STYLE, CARD_STYLE, PAGE_STYLE, FILTER_STYLE
 
-# Load data
+# ✅ Load data
 df = load_data(r"C:\Users\Olatunbosunno\Downloads\New Transport Data.xlsx")
 
-# Load GeoJSON for Nigeria states
+# ✅ Load GeoJSON for Nigeria states
 with open(r"C:\Users\Olatunbosunno\Desktop\GROUP 8 GROUP PROJECT ON TRANSPORTATION SECTOR.PY\dashboard\ng.json") as f:
     nigeria_geojson = json.load(f)
 
-# Initialize Dash app
+# ✅ Initialize Dash app
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
-# Layout
+# ✅ Layout
 app.layout = html.Div(style=PAGE_STYLE, children=[
     html.H1("Nigeria Road Accident Analysis Dashboard (2021-2025)", style=HEADER_STYLE),
 
@@ -54,7 +54,7 @@ app.layout = html.Div(style=PAGE_STYLE, children=[
     ])
 ])
 
-# Callback for interactivity
+# ✅ Callback for interactivity
 @app.callback(
     [Output('kpi-cards', 'children'),
      Output('top-causes', 'figure'),
@@ -74,7 +74,7 @@ def update_dashboard(year_range, selected_state, clickData):
         clicked_state = clickData['points'][0]['y']
         filtered_df = filtered_df[filtered_df['STATE'] == clicked_state]
 
-    # KPIs
+    # ✅ KPIs
     total_accidents = filtered_df['TOTAL CASES'].sum()
     total_deaths = filtered_df['NUMBER KILLED'].sum()
     total_injured = filtered_df['NUMBER INJURED'].sum()
@@ -89,7 +89,7 @@ def update_dashboard(year_range, selected_state, clickData):
         dbc.Col(html.Div([html.H4("Fatality Rate"), html.H2(f"{fatality_rate:.1f}%")], style=CARD_STYLE)),
     ])
 
-    # Charts
+    # ✅ Charts
     top_causes = filtered_df.groupby('STATE')['TOTAL CASES'].sum().nlargest(10).reset_index()
     fig_top_causes = px.bar(top_causes, x='TOTAL CASES', y='STATE', orientation='h',
                             color='TOTAL CASES', color_continuous_scale=['#14532d', '#32cd32'],
@@ -110,7 +110,7 @@ def update_dashboard(year_range, selected_state, clickData):
     fig_severity.add_trace(go.Bar(x=severity_dist['YEAR'], y=severity_dist['MINOR'], name='Minor', marker_color='#32cd32'))
     fig_severity.update_layout(barmode='stack', title='Accident Severity Distribution')
 
-    #  Choropleth Map
+    # ✅ Choropleth Map
     map_data = filtered_df.groupby('STATE')[['NUMBER KILLED', 'NUMBER INJURED']].sum().reset_index()
     fig_map = px.choropleth(
         map_data,
